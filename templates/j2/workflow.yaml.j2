@@ -1,0 +1,15 @@
+# Workflow: {{ name }}
+# Version Hash: {{ version_hash }}
+id: {{ id }}
+name: {{ name }}
+version_hash: "{{ version_hash }}"
+trigger_type: {{ trigger_type | default("manual") }}
+billing_tag: {{ billing_tag | default("default_pool") }}
+input_schema: {{ input_schema | tojson }}
+agent_ref: {{ agent_ref | default("") }}
+steps: []
+fallback: queue_for_human_review
+stability_flags:
+  deterministic: true
+  cache_key: hash(input)
+  max_retries: 2

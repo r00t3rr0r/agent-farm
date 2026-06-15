@@ -1,0 +1,15 @@
+# Workflow: Playwright/Cypress-Tests generieren
+# Version Hash: 09fe15a0
+id: qa_automation_v1
+name: Playwright/Cypress-Tests generieren
+version_hash: "09fe15a0"
+trigger_type: git_pr
+billing_tag: qa_pool
+input_schema: {"component_code": "string", "user_stories": "array"}
+agent_ref: qa_test_architect_agent
+steps: []
+fallback: queue_for_human_review
+stability_flags:
+  deterministic: true
+  cache_key: hash(input)
+  max_retries: 2

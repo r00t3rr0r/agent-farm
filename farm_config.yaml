@@ -1,0 +1,61 @@
+agents:
+  - id: tech_writer_agent
+    name: Technical Writer Agent
+    system_prompt_ref: prompts/tech_writer_system.md
+    tools: []
+    model_route: openclaw/local-llm-v1
+    inference_params:
+      temperature: 0.0
+      max_tokens: 1500
+      seed: 42
+
+  - id: automation_architect_agent
+    name: Low-Code Automation Architect
+    system_prompt_ref: prompts/lowcode_design_system.md
+    tools: [generate_n8n_json]
+    model_route: openclaw/local-llm-v1
+    inference_params:
+      temperature: 0.1
+      max_tokens: 2500
+      seed: 42
+
+  - id: qa_test_architect_agent
+    name: QA Test Architect Agent
+    system_prompt_ref: prompts/qa_test_gen_system.md
+    tools: [generate_playwright_ts]
+    model_route: openclaw/local-llm-v1
+    inference_params:
+      temperature: 0.0
+      max_tokens: 3000
+      seed: 42
+
+workflows:
+  - id: tech_writer_v1
+    name: API-Dokumentation generieren
+    trigger_type: file_watch
+    input_schema:
+      code_file: string
+      endpoint_desc: string
+    agent_ref: tech_writer_agent
+    steps_ref: workflows/tech_writer_workflow.yaml
+    billing_tag: techwriting_pool
+
+  - id: lowcode_gen_v1
+    name: n8n/Make-Flow generieren & validieren
+    trigger_type: csv_upload
+    input_schema:
+      data_sample: file_path
+      business_rule: string
+    agent_ref: automation_architect_agent
+    steps_ref: workflows/lowcode_automation_workflow.yaml
+    billing_tag: lowcode_pool
+
+  - id: qa_automation_v1
+    name: Playwright/Cypress-Tests generieren
+    trigger_type: git_pr
+    input_schema:
+      component_code: string
+      user_stories: array
+    agent_ref: qa_test_architect_agent
+    steps_ref: workflows/qa_test_gen_workflow.yaml
+    billing_tag: qa_pool

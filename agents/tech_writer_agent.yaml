@@ -1,0 +1,12 @@
+# Agent: Technical Writer Agent
+# Version Hash: 66c529c1
+id: tech_writer_agent
+name: Technical Writer Agent
+version_hash: "66c529c1"
+system_prompt_ref: prompts/tech_writer_system.md
+model_route: openclaw/local-llm-v1
+tools: []
+inference_params:
+  temperature: 0.0
+  max_tokens: 1500
+  seed: 42

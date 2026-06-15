@@ -1,0 +1,12 @@
+# Agent: {{ name }}
+# Version Hash: {{ version_hash }}
+id: {{ id }}
+name: {{ name }}
+version_hash: "{{ version_hash }}"
+system_prompt_ref: {{ system_prompt_ref }}
+model_route: {{ model_route | default("openclaw/local-llm-v1") }}
+tools: {{ tools | default([]) | tojson }}
+inference_params:
+  temperature: {{ inference_params.temperature | default(0.0) }}
+  max_tokens: {{ inference_params.max_tokens | default(1500) }}
+  seed: {{ inference_params.seed | default(42) }}

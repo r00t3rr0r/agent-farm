@@ -1,0 +1,23 @@
+id: tech_writer_v2
+name: API-Dokumentation generieren
+trigger_type: file_watch | webhook
+input_schema:
+  code_file: string
+  endpoint_desc: string
+steps:
+  - agent_role: tech_writer_agent
+    prompt_template: prompts/tech_writer_system.md
+    inference_params:
+      temperature: 0.0
+      max_tokens: 1500
+    tool_calls: []
+  - validation:
+      type: markdownlint
+      command: markdownlint --fix
+  - post_process:
+      output_dir: docs/generated/
+fallback: queue_for_human_review
+stability_flags:
+  deterministic: true
+  cache_key: hash(input)
+  max_retries: 2

@@ -1,0 +1,12 @@
+# Agent: QA Test Architect Agent
+# Version Hash: 56fda4bc
+id: qa_test_architect_agent
+name: QA Test Architect Agent
+version_hash: "56fda4bc"
+system_prompt_ref: prompts/qa_test_gen_system.md
+model_route: openclaw/local-llm-v1
+tools: ["generate_playwright_ts"]
+inference_params:
+  temperature: 0.0
+  max_tokens: 3000
+  seed: 42

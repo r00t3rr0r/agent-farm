@@ -1,0 +1,15 @@
+# Workflow: API-Dokumentation generieren
+# Version Hash: aba59940
+id: tech_writer_v1
+name: API-Dokumentation generieren
+version_hash: "aba59940"
+trigger_type: file_watch
+billing_tag: techwriting_pool
+input_schema: {"code_file": "string", "endpoint_desc": "string"}
+agent_ref: tech_writer_agent
+steps: []
+fallback: queue_for_human_review
+stability_flags:
+  deterministic: true
+  cache_key: hash(input)
+  max_retries: 2

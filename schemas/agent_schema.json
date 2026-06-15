@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Agent Definition",
+  "type": "object",
+  "required": ["id", "name", "system_prompt_ref", "model_route"],
+  "properties": {
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "version_hash": { "type": "string" },
+    "system_prompt_ref": { "type": "string" },
+    "model_route": { "type": "string" },
+    "tools": { "type": "array" },
+    "inference_params": {
+      "type": "object",
+      "properties": {
+        "temperature": { "type": "number", "minimum": 0.0, "maximum": 2.0 },
+        "max_tokens": { "type": "integer", "minimum": 1 },
+        "seed": { "type": "integer" }
+      }
+    }
+  }
+}

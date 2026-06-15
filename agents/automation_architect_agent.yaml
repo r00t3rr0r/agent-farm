@@ -1,0 +1,12 @@
+# Agent: Low-Code Automation Architect
+# Version Hash: 9671c7f6
+id: automation_architect_agent
+name: Low-Code Automation Architect
+version_hash: "9671c7f6"
+system_prompt_ref: prompts/lowcode_design_system.md
+model_route: openclaw/local-llm-v1
+tools: ["generate_n8n_json"]
+inference_params:
+  temperature: 0.1
+  max_tokens: 2500
+  seed: 42

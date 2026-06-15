@@ -1,0 +1,15 @@
+# Workflow: n8n/Make-Flow generieren & validieren
+# Version Hash: 11672486
+id: lowcode_gen_v1
+name: n8n/Make-Flow generieren & validieren
+version_hash: "11672486"
+trigger_type: csv_upload
+billing_tag: lowcode_pool
+input_schema: {"business_rule": "string", "data_sample": "file_path"}
+agent_ref: automation_architect_agent
+steps: []
+fallback: queue_for_human_review
+stability_flags:
+  deterministic: true
+  cache_key: hash(input)
+  max_retries: 2

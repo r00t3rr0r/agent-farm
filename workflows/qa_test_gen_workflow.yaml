@@ -1,0 +1,24 @@
+id: qa_automation_v1
+name: Playwright/Cypress-Tests generieren
+trigger_type: git_pr | schedule
+input_schema:
+  component_code: string
+  user_stories: array
+steps:
+  - agent_role: qa_test_architect_agent
+    prompt_template: prompts/qa_test_gen_system.md
+    inference_params:
+      temperature: 0.0
+      max_tokens: 3000
+    tool_calls: [generate_playwright_ts]
+  - validation:
+      type: tsc_check
+      command: "npx tsc --noEmit"
+  - execution:
+      tool: "npx playwright test --reporter=list"
+      timeout_sec: 120
+fallback: human_triage_queue
+stability_flags:
+  deterministic: true
+  parallel_exec: true
+  max_retries: 2
