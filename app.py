@@ -70,6 +70,14 @@ STRINGS = {
         "export_csv": "CSV",
         "language": "🌐 Sprache",
         "dark_mode": "🌙 Dunkler Modus",
+        "demo_section": "🎬 Demo",
+        "demo_desc": "Lade eine Beispielkonfiguration oder starte eine Demo-Vorschau mit Beispielartefakten.",
+        "demo_load": "Beispielkonfiguration laden",
+        "demo_run": "Demo-Vorschau starten",
+        "demo_loaded": "✅ Beispielkonfiguration wurde geladen.",
+        "demo_output": "Demo-Ausgabe",
+        "demo_success": "✅ Demo erfolgreich erstellt.",
+        "demo_error": "❌ Demo konnte nicht gestartet werden.",
     },
     "en": {
         "title": "🌿 AI Agent Farm – Setup Wizard",
@@ -130,8 +138,16 @@ STRINGS = {
         "export_json": "JSON",
         "export_yaml": "YAML",
         "export_csv": "CSV",
-        "language": "�� Language",
+        "language": "🌐 Language",
         "dark_mode": "🌙 Dark Mode",
+        "demo_section": "🎬 Demo",
+        "demo_desc": "Load a sample configuration or run a preview with example artifacts.",
+        "demo_load": "Load sample configuration",
+        "demo_run": "Run demo preview",
+        "demo_loaded": "✅ Sample configuration loaded.",
+        "demo_output": "Demo output",
+        "demo_success": "✅ Demo generated successfully.",
+        "demo_error": "❌ Demo could not be started.",
     }
 }
 
@@ -146,6 +162,26 @@ DEFAULT_CONFIG = {
     "auto_push": True,
     "billing_tag_prefix": "farm",
     "reporting_interval_days": 7
+}
+
+DEMO_CONFIG = {
+    "farm_name": "Demo Agent Farm",
+    "openclaw_endpoint": "http://localhost:8090",
+    "max_concurrent_agents": 2,
+    "agents_enabled": [
+        "tech_writer_agent",
+        "automation_architect_agent",
+        "qa_test_architect_agent",
+    ],
+    "workflows_enabled": [
+        "tech_writer_v1",
+        "lowcode_gen_v1",
+        "qa_automation_v1",
+    ],
+    "git_repo_url": "",
+    "auto_push": False,
+    "billing_tag_prefix": "demo",
+    "reporting_interval_days": 7,
 }
 
 AGENT_META = {
@@ -213,6 +249,9 @@ if "step" not in st.session_state:
 if "language" not in st.session_state:
     st.session_state.language = "de"
 
+if "demo_output" not in st.session_state:
+    st.session_state.demo_output = ""
+
 # ─── HELPER: Get i18n string ────────────────────────────────────────────────
 def t(key):
     """Get translated string"""
@@ -260,20 +299,55 @@ def export_config_csv():
     writer.writerow(st.session_state.config)
     return output.getvalue()
 
+
+def load_demo_config():
+    st.session_state.config = DEMO_CONFIG.copy()
+    st.session_state.step = 1
+
+
+def run_demo_preview():
+    result = subprocess.run(
+        ["python3", "scripts/demo.py"],
+        capture_output=True,
+        text=True,
+        timeout=120
+    )
+    return result
+
 # ─── HEADER ────────────────────────────────────────────────────────────────
 col1, col2, col3 = st.columns([1, 4, 1])
 with col3:
     lang_option = st.selectbox(t("language"), ["Deutsch", "English"], 
                                index=0 if st.session_state.language == "de" else 1,
                                key="lang_select")
-    if lang_option == "English":
-        st.session_state.language = "en"
-    else:
-        st.session_state.language = "de"
-    st.rerun()
+    new_lang = "en" if lang_option == "English" else "de"
+    if new_lang != st.session_state.language:
+        st.session_state.language = new_lang
+        st.rerun()
 
 st.title(t("title"))
 st.caption(t("subtitle"))
+
+with st.expander(t("demo_section")):
+    st.caption(t("demo_desc"))
+    demo_col1, demo_col2 = st.columns(2)
+    with demo_col1:
+        if st.button(t("demo_load"), use_container_width=True):
+            load_demo_config()
+            st.success(t("demo_loaded"))
+    with demo_col2:
+        if st.button(t("demo_run"), use_container_width=True):
+            demo_result = run_demo_preview()
+            if demo_result.returncode == 0:
+                st.session_state.demo_output = demo_result.stdout
+                st.success(t("demo_success"))
+            else:
+                st.session_state.demo_output = demo_result.stdout + "\n" + demo_result.stderr
+                st.error(t("demo_error"))
+
+    if st.session_state.demo_output:
+        st.subheader(t("demo_output"))
+        st.code(st.session_state.demo_output, language="log")
 
 # ─── SIDEBAR NAVIGATION & FORTSCHRITT ───────────────────────────────────────
 with st.sidebar:
@@ -287,7 +361,7 @@ with st.sidebar:
 
     for i, s in enumerate(steps, 1):
         icon = "✅" if st.session_state.step > i else "⬜" if st.session_state.step == i else "⬜"
-        st.markdown(f"{icon} **{i}. {s.split(' ')[1:] if ' ' in s else s}**")
+        st.markdown(f"{icon} **{i}. {s}**")
 
     st.divider()
     

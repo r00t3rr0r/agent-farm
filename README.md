@@ -1,6 +1,6 @@
 # 🌿 KI-Agenten-Farm
 
-**Version:** `1.1.0` | **Lizenz:** MIT | **Inference:** OpenClaw (lokal, 0 Token-Kosten)
+**Version:** `1.2.0` | **Lizenz:** MIT | **Inference:** OpenClaw (lokal, 0 Token-Kosten)
 
 Eine **insel-stabile, vollautomatisierte KI-Agenten-Farm** zur Übernahme von Remote-Jobs durch lokale LLMs. Entwicklung, Validierung, Testing und Git-Deployment laufen als **One-Command-Pipeline**.
 
@@ -140,6 +140,9 @@ chmod +x run.sh
 
 # 2) Web-Panel starten
 streamlit run app.py
+
+# 3) Demo-Vorschau starten (optional)
+./run.sh demo
 ```
 
 Danach im Browser:
@@ -172,6 +175,19 @@ Nutzen:
 - Startet das Panel nur dann, wenn es noch nicht läuft
 - Unterstützt einen schnellen, wiederholbaren Einstieg für Teams
 - Geeignet als Basis für Autostart via Login-Items, `launchd` oder `systemd --user`
+
+### Demo-Funktion zum Kennenlernen
+
+Wenn du das System zunächst ohne echte Projektdaten erleben möchtest:
+
+```bash
+./run.sh demo
+```
+
+Dabei werden:
+- die normale Generate/Validate/Test-Pipeline ausgeführt,
+- anschließend Beispielartefakte unter `storage/demo/` erzeugt,
+- und eine kompakte Vorschau für **Tech Writing**, **Low-Code** und **QA-Automation** erstellt.
 
 ---
 
@@ -256,6 +272,15 @@ python3 scripts/git_push.py
 ```bash
 ./run.sh deploy      # Vollständige Pipeline: Generate → Validate → Test → Git Push
 ./run.sh test-only   # Nur Generate → Validate → Test (kein Git Push)
+./run.sh demo        # Testlauf + Demo-Artefakte zur Funktionsvorschau
+```
+
+### `scripts/demo.py`
+**Zweck:** Erstellt deterministische Demo-Ausgaben und Beispielartefakte, damit das System ohne Live-Modell oder Kundendaten nachvollziehbar wird.
+
+```bash
+python3 scripts/demo.py
+# Output: storage/demo/tech_writer_demo.md, lowcode_demo.json, qa_demo.spec.ts, demo_summary.json
 ```
 
 ---
@@ -388,6 +413,7 @@ pip install -r requirements.txt
 |------|--------|--------------|----------|
 | **Validierung vor Änderungen** | `./run.sh test-only` | Vor jeder größeren Konfigurationsänderung | „Ich habe nur Agenten/Workflows angepasst und möchte sicher prüfen.“ |
 | **Produktiver Lauf mit Git-Update** | `./run.sh deploy` | Wenn Änderungen stabil sind und versioniert werden sollen | „Neue Prompt-Version ist fertig und soll ins Repo.“ |
+| **Erlebnis-/Preview-Modus** | `./run.sh demo` | Um die Fähigkeiten ohne echte Projektdaten zu zeigen | „Ich will Stakeholdern schnell demonstrieren, was das System erzeugt.“ |
 | **UI-gestützte Bedienung** | `streamlit run app.py` | Für schnelle Konfiguration ohne manuelle YAML-Edits | „Fachabteilung passt nur Rollen & Export an.“ |
 
 ### Konkreter Ablauf für einen neuen Kunden (Beispiel)
@@ -537,6 +563,7 @@ streamlit run app.py
 | **Konfig-Export** | Export der aktuellen Konfiguration als `JSON`, `YAML` oder `CSV` | Dokumentation, Freigabe, Audit |
 | **Theme-Unterstützung** | Vorkonfiguration über `.streamlit/config.toml` | Professionelles, konsistentes UI |
 | **Dark-Mode-Nutzung** | Umschaltbar über Streamlit-Menü (`⋮` → Settings → Theme) | Angenehme Nutzung in dunkler Umgebung |
+| **Demo-Sektion** | Beispielkonfiguration laden oder Demo-Ausgabe erzeugen | Schneller, greifbarer Produkteindruck |
 | **One-Click Deploy** | Startet `run.sh` aus dem Panel inkl. Ausgabe | Schneller Übergang von Setup zu Betrieb |
 
 ### So nutzt du die neuen Möglichkeiten
@@ -544,7 +571,8 @@ streamlit run app.py
 1. **Sprache wechseln:** Im Panel rechts oben `Deutsch` oder `English` auswählen.  
 2. **Konfiguration exportieren:** In der Sidebar Format (`JSON`/`YAML`/`CSV`) wählen und herunterladen.  
 3. **Theme anpassen:** Farben/Schrift zentral in `.streamlit/config.toml` pflegen.  
-4. **Deployment ausführen:** In Schritt 4 auf „Konfiguration speichern & Pipeline starten“ klicken.
+4. **Demo testen:** Im Bereich `🎬 Demo` Beispielkonfiguration laden oder Demo-Vorschau starten.  
+5. **Deployment ausführen:** In Schritt 4 auf „Konfiguration speichern & Pipeline starten“ klicken.
 
 ### Hinweise für den produktiven Einsatz
 
@@ -596,6 +624,8 @@ streamlit run app.py
 | `scripts/generate.py` | Python | ✅ Vorhanden | Config → YAML-Generator |
 | `scripts/validate.py` | Python | ✅ Vorhanden | Schema + YAML-Validator |
 | `scripts/test.py` | Python | ✅ Vorhanden | Mock-Inferenz-Tests |
+| `scripts/demo.py` | Python | ✅ Vorhanden | Deterministische Demo-Vorschau mit Beispielartefakten |
+| `scripts/mock_runtime.py` | Python | ✅ Vorhanden | Gemeinsame Mock-Laufzeit für Tests und Demo |
 | `scripts/git_push.py` | Python | ✅ Vorhanden | Git-Automatisierung |
 | `templates/j2/agent.yaml.j2` | Jinja2 | ✅ Vorhanden | Agent-Template |
 | `templates/j2/workflow.yaml.j2` | Jinja2 | ✅ Vorhanden | Workflow-Template |
@@ -620,4 +650,4 @@ MIT License – Frei verwendbar, modifizierbar und verteilbar.
 
 ---
 
-*Erstellt mit KI-Agenten-Farm v1.1.0 | OpenClaw lokal | 0 Token-Kosten*
+*Erstellt mit KI-Agenten-Farm v1.2.0 | OpenClaw lokal | 0 Token-Kosten*

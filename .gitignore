@@ -3,6 +3,7 @@ __pycache__/
 *.pyo
 .env
 storage/farm.db
+storage/demo/
 .DS_Store
 *.egg-info/
 dist/
