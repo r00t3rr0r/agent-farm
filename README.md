@@ -132,6 +132,47 @@ pip install -r requirements.txt
 chmod +x run.sh
 ```
 
+### Erste Inbetriebnahme (empfohlen)
+
+```bash
+# 1) Basistest ohne Git-Push
+./run.sh test-only
+
+# 2) Web-Panel starten
+streamlit run app.py
+```
+
+Danach im Browser:
+1. Infrastruktur setzen (Farm-Name, OpenClaw-Endpunkt, Parallelität)
+2. Agenten und passende Workflows aktivieren
+3. Git/Billing konfigurieren
+4. Review durchführen und Deploy starten
+
+### Optional: Automatischer Start beim ersten Aufruf
+
+Wenn du das Panel ohne manuelle Startbefehle nutzen möchtest, kannst du einen kleinen Wrapper verwenden.
+
+**Beispiel (macOS/Linux):**
+```bash
+# Datei: start_panel.sh
+#!/usr/bin/env bash
+cd "$(dirname "$0")"
+if ! pgrep -f "streamlit run app.py" >/dev/null; then
+  nohup streamlit run app.py >/tmp/agent-farm-panel.log 2>&1 &
+fi
+echo "Web-Panel läuft auf: http://localhost:8501"
+```
+
+```bash
+chmod +x start_panel.sh
+./start_panel.sh
+```
+
+Nutzen:
+- Startet das Panel nur dann, wenn es noch nicht läuft
+- Unterstützt einen schnellen, wiederholbaren Einstieg für Teams
+- Geeignet als Basis für Autostart via Login-Items, `launchd` oder `systemd --user`
+
 ---
 
 ## 4. Master-Konfiguration
@@ -341,6 +382,32 @@ pip install -r requirements.txt
 ./run.sh deploy
 ```
 
+### Häufige Betriebsmodi (mit Beispielen)
+
+| Modus | Befehl | Wann nutzen? | Beispiel |
+|------|--------|--------------|----------|
+| **Validierung vor Änderungen** | `./run.sh test-only` | Vor jeder größeren Konfigurationsänderung | „Ich habe nur Agenten/Workflows angepasst und möchte sicher prüfen.“ |
+| **Produktiver Lauf mit Git-Update** | `./run.sh deploy` | Wenn Änderungen stabil sind und versioniert werden sollen | „Neue Prompt-Version ist fertig und soll ins Repo.“ |
+| **UI-gestützte Bedienung** | `streamlit run app.py` | Für schnelle Konfiguration ohne manuelle YAML-Edits | „Fachabteilung passt nur Rollen & Export an.“ |
+
+### Konkreter Ablauf für einen neuen Kunden (Beispiel)
+
+```bash
+# 1) Lokalen Test ausführen
+./run.sh test-only
+
+# 2) Panel öffnen
+streamlit run app.py
+
+# 3) Nach Freigabe deployen
+./run.sh deploy
+```
+
+Empfohlene Konfiguration im Panel:
+- Rollen: `tech_writer_agent`, `qa_test_architect_agent`
+- Workflows: `tech_writer_v1`, `qa_automation_v1`
+- Export: `YAML` für technische Doku + `CSV` für Abstimmung mit Nicht-Technikteams
+
 ### Erwartete Ausgabe (Erfolg)
 
 ```
@@ -487,6 +554,33 @@ streamlit run app.py
   - `.streamlit/config.toml`
   - `prompts/` und `templates/`
 - Die Detail-Dokumentation zum UI findest du in `docs/WEB_PANEL.md`.
+
+### Praxisbeispiele für typische Nutzung
+
+1. **Technische Dokumentation automatisieren**
+   - Aktivierte Rolle: `tech_writer_agent`
+   - Workflow: `tech_writer_v1`
+   - Ergebnis: konsistente API-Dokumentation, exportierbar als JSON/YAML für Archivierung
+
+2. **Low-Code-Flow vorbereiten und abstimmen**
+   - Aktivierte Rolle: `automation_architect_agent`
+   - Workflow: `lowcode_gen_v1`
+   - Ergebnis: strukturierte Workflow-Definition, als CSV exportiert für Review durch Operations/PM
+
+3. **QA-Regression vorbereiten**
+   - Aktivierte Rolle: `qa_test_architect_agent`
+   - Workflow: `qa_automation_v1`
+   - Ergebnis: reproduzierbare Testartefakte mit klaren Deploy-Ständen über Git-Tags
+
+### Verständnisleitfaden: Welche Einstellung beeinflusst was?
+
+| Einstellung | Wirkung | Empfehlung |
+|------------|---------|------------|
+| `max_concurrent_agents` | Höhere Parallelität, höhere RAM/VRAM-Last | Mit `2-4` starten, dann schrittweise erhöhen |
+| `openclaw_endpoint` | Zielsystem für Inferenz | Lokal stabil halten (z. B. `http://localhost:8090`) |
+| `agents_enabled` | Schaltet Fähigkeiten frei | Nur Rollen aktivieren, die wirklich benötigt werden |
+| `workflows_enabled` | Steuert automatisierte Abläufe | Erst nach erfolgreichem `test-only` produktiv deployen |
+| `billing_tag_prefix` | Strukturierte Zuordnung von Kosten/Erträgen | Pro Kunde/Projekt ein eindeutiges Präfix nutzen |
 
 ---
 
