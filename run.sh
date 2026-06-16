@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # run.sh – One-command Agent Farm Pipeline
-# Usage: ./run.sh [deploy|test-only]
+# Usage: ./run.sh [deploy|test-only|demo]
 set -e
 
 MODE=${1:-deploy}
@@ -22,7 +22,11 @@ echo ""
 echo "🧪 Step 3/4: Running tests..."
 python3 scripts/test.py || { echo "❌ Tests failed. Aborting."; exit 1; }
 
-if [[ "$MODE" == "deploy" ]]; then
+if [[ "$MODE" == "demo" ]]; then
+    echo ""
+    echo "🎬 Step 4/4: Running demo preview..."
+    python3 scripts/demo.py
+elif [[ "$MODE" == "deploy" ]]; then
     echo ""
     echo "📤 Step 4/4: Pushing to Git..."
     python3 scripts/git_push.py

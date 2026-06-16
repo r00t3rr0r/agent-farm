@@ -5,35 +5,10 @@ Does NOT require a live OpenClaw instance; uses deterministic stubs.
 """
 import yaml
 import json
-import time
 import subprocess
 import sys
 from pathlib import Path
-
-# Mock agent registry – mirrors farm_config.yaml agents
-MOCK_AGENTS = {
-    "tech_writer_agent": {"temperature": 0.0, "output_type": "markdown"},
-    "automation_architect_agent": {"temperature": 0.1, "output_type": "json"},
-    "qa_test_architect_agent": {"temperature": 0.0, "output_type": "typescript"},
-}
-
-
-def mock_inference(agent_id: str, prompt: str) -> dict:
-    """Returns a deterministic mock response (no GPU/API required)."""
-    cfg = MOCK_AGENTS.get(agent_id, {})
-    return {
-        "id": f"mock-{agent_id}-{int(time.time())}",
-        "model": "openclaw/local",
-        "choices": [
-            {
-                "message": {
-                    "role": "assistant",
-                    "content": f"[MOCK] {prompt[:60]}... (temp={cfg.get('temperature', 0)})",
-                }
-            }
-        ],
-        "usage": {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},
-    }
+from mock_runtime import MOCK_AGENTS, mock_inference
 
 
 def run_workflow(wf_path: Path) -> bool:
