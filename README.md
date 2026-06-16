@@ -1,6 +1,6 @@
 # 🌿 KI-Agenten-Farm
 
-**Version:** `1.0.0` | **Lizenz:** MIT | **Inference:** OpenClaw (lokal, 0 Token-Kosten)
+**Version:** `1.1.0` | **Lizenz:** MIT | **Inference:** OpenClaw (lokal, 0 Token-Kosten)
 
 Eine **insel-stabile, vollautomatisierte KI-Agenten-Farm** zur Übernahme von Remote-Jobs durch lokale LLMs. Entwicklung, Validierung, Testing und Git-Deployment laufen als **One-Command-Pipeline**.
 
@@ -19,7 +19,8 @@ Eine **insel-stabile, vollautomatisierte KI-Agenten-Farm** zur Übernahme von Re
 9. [Ausführung & Testing-Protokoll](#9-ausführung--testing-protokoll)
 10. [Git-Automatisierung](#10-git-automatisierung)
 11. [Skalierung & Gehalts-Pooling](#11-skalierung--gehalts-pooling)
-12. [Datei-Manifest](#12-datei-manifest)
+12. [Web-Panel (UI) – Mehrsprachigkeit, Export, Theme](#12-web-panel-ui--mehrsprachigkeit-export-theme)
+13. [Datei-Manifest](#13-datei-manifest)
 
 ---
 
@@ -442,12 +443,61 @@ KI-System
 
 ---
 
-## 12. Datei-Manifest
+## 12. Web-Panel (UI) – Mehrsprachigkeit, Export, Theme
+
+Das Projekt enthält ein Streamlit-Web-Panel (`app.py`), das die Einrichtung ohne manuelle YAML-Bearbeitung ermöglicht.  
+Für Teams und Einzelanwender ist dies der schnellste Weg zur sicheren Inbetriebnahme.
+
+### Schnellstart Web-Panel
+
+```bash
+# 1) Abhängigkeiten installieren
+pip install -r requirements.txt
+
+# 2) Web-Panel starten
+streamlit run app.py
+
+# 3) Browser öffnen
+# http://localhost:8501
+```
+
+### Funktionsumfang
+
+| Funktion | Beschreibung | Nutzen |
+|----------|--------------|--------|
+| **4-Schritt-Wizard** | Infrastruktur → Rollen/Workflows → Git/Billing → Review/Deploy | Strukturierte, fehlerarme Einrichtung |
+| **Mehrsprachigkeit (DE/EN)** | Sprachumschaltung direkt im Panel | Bessere Nutzbarkeit für gemischte Teams |
+| **Konfig-Export** | Export der aktuellen Konfiguration als `JSON`, `YAML` oder `CSV` | Dokumentation, Freigabe, Audit |
+| **Theme-Unterstützung** | Vorkonfiguration über `.streamlit/config.toml` | Professionelles, konsistentes UI |
+| **Dark-Mode-Nutzung** | Umschaltbar über Streamlit-Menü (`⋮` → Settings → Theme) | Angenehme Nutzung in dunkler Umgebung |
+| **One-Click Deploy** | Startet `run.sh` aus dem Panel inkl. Ausgabe | Schneller Übergang von Setup zu Betrieb |
+
+### So nutzt du die neuen Möglichkeiten
+
+1. **Sprache wechseln:** Im Panel rechts oben `Deutsch` oder `English` auswählen.  
+2. **Konfiguration exportieren:** In der Sidebar Format (`JSON`/`YAML`/`CSV`) wählen und herunterladen.  
+3. **Theme anpassen:** Farben/Schrift zentral in `.streamlit/config.toml` pflegen.  
+4. **Deployment ausführen:** In Schritt 4 auf „Konfiguration speichern & Pipeline starten“ klicken.
+
+### Hinweise für den produktiven Einsatz
+
+- Exportdateien eignen sich als **Change- und Freigabe-Artefakte** in Projekten.
+- Für konsistente Team-Ergebnisse empfiehlt sich die Versionierung von:
+  - `farm_config.yaml`
+  - `.streamlit/config.toml`
+  - `prompts/` und `templates/`
+- Die Detail-Dokumentation zum UI findest du in `docs/WEB_PANEL.md`.
+
+---
+
+## 13. Datei-Manifest
 
 | Datei | Typ | Status | Beschreibung |
 |-------|-----|--------|--------------|
 | `farm_config.yaml` | YAML | ✅ Vorhanden | Master-Konfiguration |
 | `run.sh` | Bash | ✅ Vorhanden | One-Command Pipeline |
+| `app.py` | Python (Streamlit) | ✅ Vorhanden | Web-Panel für Setup, Review und Deploy |
+| `.streamlit/config.toml` | TOML | ✅ Vorhanden | Theme- und UI-Grundeinstellungen |
 | `requirements.txt` | Text | ✅ Vorhanden | Python-Abhängigkeiten |
 | `scripts/generate.py` | Python | ✅ Vorhanden | Config → YAML-Generator |
 | `scripts/validate.py` | Python | ✅ Vorhanden | Schema + YAML-Validator |
@@ -466,6 +516,7 @@ KI-System
 | `agents/` | Ordner | 🔄 Generiert | Agent-YAMLs (via generate.py) |
 | `storage/farm.db` | SQLite | 🔄 Laufzeit | State & Billing-DB |
 | `tools/` | Ordner | 📦 Optional | Lokale CLI-Tools |
+| `docs/WEB_PANEL.md` | Markdown | ✅ Vorhanden | Detaillierte UI-Dokumentation |
 
 ---
 
@@ -475,4 +526,4 @@ MIT License – Frei verwendbar, modifizierbar und verteilbar.
 
 ---
 
-*Erstellt mit KI-Agenten-Farm v1.0.0 | OpenClaw lokal | 0 Token-Kosten*
+*Erstellt mit KI-Agenten-Farm v1.1.0 | OpenClaw lokal | 0 Token-Kosten*
